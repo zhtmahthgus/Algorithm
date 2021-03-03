@@ -1,0 +1,238 @@
+//행렬에서 특정 원소 찾기 의사코드
+Alg findMatrix(A,x)
+r(행)<-0
+while(r<n)
+ i<-findRow(A[r].x)
+ if(i>=0)
+  write("found at", r, i)
+  return
+ else
+  r<-r+1
+write("not found")
+return
+
+Alg findRow(A,x)
+i<-0
+while(i<n)(n:행렬의 길이)
+ if(x=A[i])
+  return i
+ else
+  i<-i+1
+return -1
+
+//c코드
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define ROWS 8
+#define COLS 8
+
+void makeArray(int A[][COLS])
+{
+    for(int r = 0; r<ROWS; r++)
+    {
+        for(int c =0; c<COLS; c++)
+        {
+            A[r][c] =  rand()%100;
+        }
+    }
+}
+void printArray(int A[][COLS])
+{
+    for(int r =0; r<ROWS; r++)
+    {
+        for(int c =0; c<COLS; c++)
+        {
+            printf("%2d ", A[r][c]);
+        }
+        printf("\n");
+    }
+     printf("\n");
+}
+int findRow(int A[],int key)
+{
+    for(int c = 0; c<COLS; c++)
+        if(A[c] == key)
+            return c;
+    return -1;
+}
+void findMatrix(int A[][COLS],int key)
+{
+    int r = 0;
+    int index;
+    
+    while(r < ROWS)
+    {
+        index = findRow(A[r],key);
+        if(index>=0)
+        {
+            printf("%d행 %d열에서 %d발견\n", r, index, key);
+            return;
+        }
+        else
+            r++;
+    }
+    printf("Not Found\n");
+}
+int main(void) {
+    int A[ROWS][COLS];
+    srand(time(NULL));
+    makeArray(A);
+    printArray(A);
+    
+    int key;
+    printf("Input a key value : ");
+    scanf("%d", &key);
+    findMatrix(A,key);
+}
+
+최악의 실행시간 : O(n^2) - 반복문 중첩(findMatix가 findRow n번 호출, 이때 findRow 행마다 n번 원소 탐색)
+따라서 선형시간(O(n)) 알고리즘이 아니다.
+//비트행렬에서 최대 1행 찾기 의사코드
+Alg mostOnes(A,n)
+i,j<-0
+while(1)
+ while(A[i][j]=1)
+  j<-j+1
+  if(j=n)
+   return i
+ row<-i
+ while(A[i][j]=0)
+  i<-i+1
+  if(i=n)
+   return row
+//c코드
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define ROWS 8
+#define COLS 8
+
+void makeArray(int A[][COLS])
+{
+    for(int r = 0; r<ROWS; r++)
+    {
+        int count = rand()%8;
+        for(int i =0; i<count; i++)
+            A[r][i] = 1;
+        for(int j =count; j<COLS; j++)
+            A[r][j] = 0;
+    }
+}
+void printArray(int A[][COLS])
+{
+    for(int r =0; r<ROWS; r++)
+    {
+        for(int c =0; c<COLS; c++)
+        {
+            printf("%2d ", A[r][c]);
+        }
+        printf("\n");
+    }
+     printf("\n");
+}
+void mostOnesButSlow(int A[][COLS])
+{
+    int jmax=0;
+    int i,j,row;
+    for(int i=0; i<ROWS; i++)
+    {
+        j=0;
+        while(j<COLS&&A[i][j]==1)
+            j++;
+        if(j>jmax)
+        {
+            row=i;
+            jmax=j;
+        }
+    }
+    printf("%d행에 %d개의 1이 최대값임\n",row,jmax);
+}
+int mostOnes(int A[][COLS])
+{
+    int i =0, j=0;
+    int row;
+    
+    while(1)
+    {
+        while(A[i][j]==1)
+        {
+            j++;
+            if(j==COLS-1)
+                return i;
+        }
+        row = i;
+        while(A[i][j]==0)
+        {
+            i++;
+            if(i==COLS-1)
+                return row;
+        }
+    }
+}
+
+int main(void) {
+    int A[ROWS][COLS];
+    srand(time(NULL));
+    makeArray(A);
+    printArray(A);
+    getchar();
+    
+    printf("최대 1행은 %d행 입니다.\n",mostOnes(A));
+}
+최악의 실행시간 : O(n) - 반복문 중첩이 아님
+//누적평균
+//c코드
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define SIZE 8
+
+void makeArray(int A[])
+{
+    for(int i = 0; i<SIZE; i++)
+        A[i] = rand() % 50 + 50;
+}
+void printArray(int A[])
+{
+    for(int i =0; i<SIZE; i++)
+        printf("[%d] ",A[i]);
+    printf("\n");
+}
+
+void prefixAVg1(int A[])
+{
+    int X[SIZE];
+    int sum;
+    for(int i=0; i<SIZE; i++)
+    {
+        sum = 0;
+        for(int j = 0; j<=i; j++)
+            sum += A[j];
+        X[i] = sum/(i + 1);
+    }
+    printArray(X);
+}//중첩된 반복문, O(n^2)
+void prefixAVg2(int A[])
+{
+    int X[SIZE];
+    int sum = 0;
+    for(int i=0; i<SIZE; i++)
+    {
+        sum += A[i];
+        X[i] = sum/(i + 1);
+    }
+    printArray(X);
+}//한개의 반복문, O(n)
+int main(void) {
+    int A[SIZE];
+    srand(time(NULL));
+    makeArray(A);
+    printArray(A);
+    getchar();
+    prefixAVg2(A);
+    
+}
