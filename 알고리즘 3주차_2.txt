@@ -1,0 +1,168 @@
+//케이크 문제 배열1
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 100
+
+void buildList(int arr[], int n)
+{
+    for(int i=0; i<n; i++)
+        arr[i] = i + 1;
+}
+
+int runSimulation(int arr[], int n, int k)
+{
+   int r = 0;
+   int N = n;
+   while(n > 1)
+   {
+       int i = 0;
+       while(i<k)
+       {
+           r = (r + 1)%N;
+           if(arr[r] != 0)
+                i++;
+       }
+       arr[r] = 0;
+       n--;
+       while(arr[r]==0)
+            r = (r + 1)%N;
+   }
+   return arr[r];
+}
+
+void candle(int n, int k)
+{
+    int array[n];
+    buildList(array,n);
+    int index = runSimulation(array,n,k);
+    printf("%d", index);
+}
+
+void main()
+{
+
+    candle(7,3);
+    
+}
+//케이크 문제 배열2
+#include <stdio.h>
+#include <stdlib.h>
+
+void buildList(int arr[], int n)
+{
+    for(int i=0; i<n; i++)
+        arr[i] = i + 1;
+}
+
+void remove1(int arr[], int n, int pos)
+{
+    for(int i=pos; i<n - 1; i++)
+        arr[i] = arr[i + 1];
+}
+
+int runSimulation(int arr[], int n, int k)
+{
+   int r = 0;
+   while(n > 1)
+   {
+       r = (r + k) % n;
+       remove1(arr, n, r);
+       n--;
+   }
+   return arr[0];
+}
+
+void candle(int n, int k)
+{
+    int array[n];
+    buildList(array,n);
+    int index = runSimulation(array,n,k);
+    printf("%d", index);
+}
+
+void main()
+{
+
+    candle(6,2);
+    
+}
+//케이크 문제 원형 리스트
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct ListNode
+{
+    int data;
+    struct ListNode* link;
+}ListNode;
+
+typedef struct
+{
+    ListNode* head;
+}LinkedListType;
+
+void init(LinkedListType* L)
+{
+    L->head = NULL;
+}
+
+void addLast(LinkedListType* L, int item)
+{
+    ListNode* node = (ListNode*)malloc(sizeof(ListNode));
+    node->data = item;
+    node->link = NULL;
+    if (L->head == NULL)
+        L->head = node;
+    else
+    {
+        ListNode* before = L->head;
+        while (before->link != NULL)
+            before = before->link;
+        before->link = node;
+    }
+}
+
+void buildList(LinkedListType* L,int n)
+{
+    
+    for(int i=1; i<=n; i++)
+    {
+      addLast(L, i);
+    }
+    ListNode* p = L->head;
+    while (p->link != NULL)
+        p = p->link;
+    p->link = L -> head;
+}
+
+int runSimulation(LinkedListType* L,int n, int k)
+{
+    ListNode* p = L->head;
+    while(p != p->link)
+    {
+        for(int i=1; i<k; i++)
+            p = p->link;
+        ListNode* pnext = p->link;
+        p->link = p->link->link;
+        free(pnext);
+        p = p->link;
+    }
+    return p->data;
+}
+
+void candle(int n, int k)
+{
+    LinkedListType list;
+    init(&list);
+    buildList(&list,n);
+    int index = runSimulation(&list,n,k);
+    printf("%d", index);
+}
+
+void main()
+{
+
+    candle(7,2);
+    
+}
