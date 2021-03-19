@@ -107,32 +107,17 @@ void init(LinkedListType* L)
     L->head = NULL;
 }
 
-void addLast(LinkedListType* L, int item)
-{
-    ListNode* node = (ListNode*)malloc(sizeof(ListNode));
-    node->data = item;
-    node->link = NULL;
-    if (L->head == NULL)
-        L->head = node;
-    else
-    {
-        ListNode* before = L->head;
-        while (before->link != NULL)
-            before = before->link;
-        before->link = node;
-    }
-}
-
 void buildList(LinkedListType* L,int n)
 {
-    
-    for(int i=1; i<=n; i++)
+    ListNode* p = (ListNode*)malloc(sizeof(ListNode));
+    L->head = p;
+    p->data = 1;
+    for(int i=2; i<=n; i++)
     {
-      addLast(L, i);
+     p->link = (ListNode*)malloc(sizeof(ListNode));
+     p = p->link;
+     p->data=i;
     }
-    ListNode* p = L->head;
-    while (p->link != NULL)
-        p = p->link;
     p->link = L -> head;
 }
 
@@ -157,12 +142,11 @@ void candle(int n, int k)
     init(&list);
     buildList(&list,n);
     int index = runSimulation(&list,n,k);
-    printf("%d", index);
+    printf("%d\n", index);
 }
 
 void main()
 {
-
     candle(7,2);
-    
+    candle(7,3);
 }
