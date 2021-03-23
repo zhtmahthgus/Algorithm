@@ -1,0 +1,41 @@
+//기간 배열 구현
+#include <stdio.h>
+#define SIZE 6
+void spans(int X[], int S[])
+{
+    int s;
+    for(int i=0; i<SIZE; i++)
+    {
+        s = 1;
+        while((s<=i)&&(X[i-s]<=X[i]))
+            s++;
+        S[i] = s;
+    }
+}
+int main()
+{
+    int X[SIZE] = {6, 3, 4, 2, 5, 3};
+    int S[SIZE] = {0};
+    
+    spans(X, S);
+    
+    for(int i = 0; i<SIZE; i++)
+        printf("[%d]", S[i]);
+    printf("\n");
+}
+//기간 스택 구현
+//두개의 스택으로 큐 구현
+//양자택일 문답 트리 구현
+
+//5장 우선순위 큐
+우선순위 큐 ADT는 항목들을 저장
+각 항목: (키, 원소) 쌍
+스택: 가장 최근에 Input/ 큐: first Input/ 우선순위 큐: 우선순위
+//우선순위 큐를 이용한 정렬
+배열 구현 vs 연결 리스트 vs 히프(heap)
+
+순서리스트로 구현
+-> 정렬 알고리즘
+단순/비효율적: 삽입, 선택, 버블, 쉘 정렬
+복잡/ 효율적: heap, quick, 합병 정렬
+
