@@ -1,0 +1,136 @@
+//스택 2개로 큐 구현
+#include <stdio.h> 
+#include <stdlib.h> 
+#define MAX_ELEMENT 100
+
+typedef struct {
+	int data[MAX_ELEMENT];
+	int top;
+} StackType;
+
+typedef struct {
+    StackType s1;
+    StackType s2;
+} QueueType;
+
+void init_Stack(StackType *s)
+{
+	s->top = -1;
+}
+
+int is_Empty(StackType *s)
+{
+	return (s->top == -1);
+}
+
+void push(StackType *s, int item)
+{
+    s->data[++(s->top)] = item;
+}
+
+int pop(StackType *s)
+{
+	if (is_Empty(s)) {
+		exit(1);
+	}
+	else return s->data[(s->top)--];
+}
+void init_Queue(QueueType *q)
+{
+    init_Stack(&q->s1);
+    init_Stack(&q->s2);
+}
+void enqueue(QueueType *q, int item)
+{
+    push(&q->s1,item);
+}
+int dequeue(QueueType *q)
+{
+	if(is_Empty(&q->s2))
+	{
+	    while(!is_Empty(&q->s1))
+	    {
+	       int v = pop(&q->s1);
+	        push(&q->s2, v);
+	    }
+	}
+	return pop(&q->s2);
+}
+int main(void)
+{
+    QueueType q;
+    init_Queue(&q);
+    enqueue(&q, 1);
+    enqueue(&q, 2);
+    printf("%d", dequeue(&q));
+    printf("%d", dequeue(&q));
+}
+//기간 스택 구현
+#include <stdio.h> 
+#include <stdlib.h> 
+#define MAX_ELEMENT 100
+#define SIZE 6
+
+typedef struct {
+	int data[MAX_ELEMENT];
+	int top;
+} StackType;
+
+void init_Stack(StackType *s)
+{
+	s->top = -1;
+}
+
+int is_Empty(StackType *s)
+{
+	return (s->top == -1);
+}
+
+void push(StackType *s, int item)
+{
+    s->data[++(s->top)] = item;
+}
+
+int pop(StackType *s)
+{
+	if (is_Empty(s)) {
+		exit(1);
+	}
+	else return s->data[(s->top)--];
+}
+int peek(StackType *s)
+{
+	if (is_Empty(s)) {
+		exit(1);
+	}
+	else return s->data[(s->top)];
+}
+void spans(int X[], int S[])
+{
+    StackType s;
+    init_Stack(&s);
+    for(int i=0; i<SIZE; i++)
+    {
+        while(!is_Empty(&s)&&X[peek(&s)]<=X[i])
+            pop(&s);
+        if(is_Empty(&s))
+            S[i] = i + 1;
+        else
+            S[i] = i - peek(&s);
+        push(&s, i);
+    }
+    while(!is_Empty(&s))
+        pop(&s);
+}
+
+int main()
+{
+    int X[SIZE] = {6, 3, 4, 2, 5, 3};
+    int S[SIZE] = {0};
+    
+    spans(X, S);
+    
+    for(int i = 0; i<SIZE; i++)
+        printf("[%d]", S[i]);
+    printf("\n");
+}
