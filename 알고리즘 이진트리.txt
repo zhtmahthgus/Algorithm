@@ -1,0 +1,527 @@
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+/*----------구조체 선언----------*/
+
+typedef struct NODE{
+
+    int data;
+
+    
+
+    struct NODE *left_child;
+
+    struct NODE *right_child;
+
+} Node;
+
+/*----------------------------*/
+
+ 
+
+Node *pr;
+
+ 
+
+/*----------함수 선언---------*/
+
+Node *Init_Tree(void);
+
+void Input_Data(Node **root, int data);
+
+Node *Search_Data(Node *root, int data);
+
+Node *Find_Suc(Node *root, int data);
+
+void Delete_Data(Node *root, int data);
+
+void Inorder_Traverse(Node *root);
+
+void Print_Tree(Node *root);
+
+/*--------------------------*/
+
+ 
+
+int main(void) {
+
+    Node *root = NULL;
+
+    Node *tmp;
+
+//    Input_Data(&root, 20);
+
+//
+
+//    printf("tr->data = %d\n", root->data);
+
+//
+
+//    Input_Data(&root, 20);
+
+    
+
+    Input_Data(&root, 20);
+
+    Input_Data(&root, 10);
+
+    Input_Data(&root, 30);
+
+    Input_Data(&root, 5);
+
+    Input_Data(&root, 3);
+
+    Input_Data(&root, -7);
+
+    Input_Data(&root, 6);
+
+    Input_Data(&root, -15);
+
+    Input_Data(&root, 25);
+
+    Input_Data(&root, 25);
+
+    Input_Data(&root, 38);
+
+    Input_Data(&root, 33);
+
+    Input_Data(&root, 37);
+
+ 
+
+#if 0
+
+    int n;
+
+    
+
+    while(n != -1){ // 끝내고 싶으면 -1 입력
+
+        printf("\nData = ");
+
+        scanf("%d", &n);
+
+        printf("\n")
+
+        tmp = Search_Data(root, n);
+
+            
+
+        if(tmp != NULL)
+
+            printf("[%d] = %d\n", n, tmp->data);
+
+    }
+
+#endif
+
+ 
+
+#if 1
+
+    int n;
+
+    
+
+    Print_Tree(root);
+
+    
+
+    printf("Data = ");
+
+    scanf("%d", &n);
+
+    
+
+    Delete_Data(root, n);
+
+    
+
+    Print_Tree(root);
+
+#endif
+
+    
+
+    return 0;
+
+}
+
+ 
+
+ 
+
+Node *Init_Tree(void){
+
+    Node *tr = (Node *)malloc(sizeof(Node));
+
+    
+
+    tr->data = 0;
+
+    tr->left_child= NULL;
+
+    tr->right_child = NULL;
+
+    
+
+    return tr;
+
+}
+
+ 
+
+void Input_Data(Node **root, int data){
+
+    Node *rtmp;
+
+    Node *tmp = Init_Tree();
+
+    Node *cur = *root;
+
+    
+
+    tmp->data = data;
+
+    
+
+    if(*root == NULL){
+
+        *root = tmp;
+
+    }
+
+    else{
+
+        if((*root)->data > data){
+
+            if((*root)->left_child == NULL){
+
+                (*root)->left_child = tmp;
+
+            }
+
+            else{
+
+                rtmp = (*root)->left_child;
+
+                Input_Data(&rtmp, data);
+
+            }
+
+        }
+
+        else if(cur->data < data){
+
+            if(cur->right_child == NULL){
+
+                cur->right_child = tmp;
+
+            }
+
+            else{
+
+                rtmp = cur->right_child;
+
+                Input_Data(&rtmp, data);
+
+            }
+
+        }
+
+        else{
+
+            puts("The input data is already in Tree.\n");
+
+        }
+
+    }
+
+ 
+
+}
+
+ 
+
+Node *Search_Data(Node *root, int data){
+
+    Node *cur;
+
+    Node *tmp = NULL;
+
+    cur = root;
+
+    
+
+    pr = NULL;
+
+    
+
+    while(cur != NULL){
+
+        if(cur->data > data){
+
+            pr = cur;
+
+            cur = cur->left_child;
+
+        }
+
+        else if(cur->data < data){
+
+            pr = cur;
+
+            cur = cur->right_child;
+
+        }
+
+        else{
+
+            tmp = cur;
+
+            break;
+
+        }
+
+    }
+
+ 
+
+    return tmp;
+
+}
+
+ 
+
+Node *Find_Suc(Node *root, int data){
+
+    Node *cur = Search_Data(root, data);
+
+    Node *tmp;
+
+    Node *pr_cur;
+
+    
+
+    tmp = cur->right_child;
+
+    
+
+    if(tmp){
+
+        cur = tmp;
+
+        
+
+        while(cur->left_child){
+
+            cur = tmp->left_child;
+
+            tmp = cur->left_child;
+
+        }
+
+    }
+
+    else{
+
+        if(pr->left_child != NULL){
+
+            cur = pr;
+
+        }
+
+        
+
+        if(pr->right_child != NULL){
+
+            pr_cur = pr;
+
+            
+
+            if(pr_cur->right_child->data == cur->data){
+
+                Search_Data(root, pr->data);
+
+                cur = pr;
+
+                
+
+                if(pr->right_child->data == pr_cur->data){
+
+                    cur = NULL;
+
+                    puts("\nNo Successor.");
+
+                }
+
+            }
+
+        }
+
+    }
+
+    
+
+    return cur;
+
+}
+
+ 
+
+void Delete_Data(Node *root, int data){ // 삭제되는 데이터의 자식 노드가 모두 있는 경우에 중위 후행자와 교환된다.
+
+    Node *suc;
+
+    Node *cur;
+
+    Node *tmp;
+
+    
+
+    cur = Search_Data(root, data);
+
+    
+
+    if(cur == NULL){
+
+        puts("The data is not in Tree.\n");
+
+    }
+
+    else{
+
+        if(cur->left_child == NULL && cur->right_child == NULL){
+
+            if(pr->left_child != NULL){
+
+                if(pr->left_child->data == cur->data){
+
+                    pr->left_child = NULL;
+
+                }
+
+                else{
+
+                    pr->right_child = NULL;
+
+                }
+
+            }
+
+            else{
+
+                    pr->right_child = NULL;
+
+            }
+
+            
+
+            free(cur);
+
+        }
+
+        else if(cur->left_child != NULL && cur->right_child != NULL){
+
+            suc = Find_Suc(root, data); // 지우고자 하는 노드의 중위 후행자 (successor)
+
+            
+
+            tmp = Init_Tree();
+
+            tmp->data = suc->data;
+
+            
+
+            puts("1");
+
+            Delete_Data(root, suc->data); // 내가 지우고 싶은게 중복된다.
+
+            
+
+            cur->data = tmp->data;
+
+            free(tmp);
+
+        }
+
+        else{
+
+            tmp = NULL;
+
+            
+
+            if(cur->left_child == NULL){ // right_child에 자식 노드가 있으면
+
+                tmp = cur->right_child;
+
+            }
+
+            
+
+            if(cur->right_child == NULL){ // left_child에 자식 노드가 있으면
+
+                tmp = cur->left_child;
+
+            }
+
+            
+
+            cur->data = tmp->data;
+
+            cur->left_child = tmp->left_child;
+
+            cur->right_child = tmp->right_child;
+
+            
+
+            free(tmp);
+
+        }
+
+    }
+
+}
+
+ 
+
+void Inorder_Traverse(Node *root){
+
+    if(root){
+
+        Inorder_Traverse(root->left_child);
+
+        
+
+        printf("%2d  ", root->data);
+
+        
+
+        Inorder_Traverse(root->right_child);
+
+    }
+
+}
+
+ 
+
+void Print_Tree(Node *root){
+
+    puts("\nPrinting starts.");
+
+    
+
+    Inorder_Traverse(root);
+
+    printf("\n");
+
+    
+
+    puts("Printing is complete.\n");
+
+ 
+
+}
