@@ -1,0 +1,52 @@
+//(중복)이진탐색트리의 최대 최소 키
+Alg findMaxKey()
+ input Tree T
+ output max key K
+
+1.v<-T.root()
+2.while(T.isInternal(v))
+   v<-T.rightChild(v)
+3.return key(T.parent(v))
+
+Alg findMinKey()
+ input Tree T
+ output min key K
+
+1.v<-T.root()
+2.while(T.isInternal(v))
+   v<-T.leftChild(v)
+3.return key(T.parent(v))
+//(중복)이진탐색트리의 최대 최소 키를 가지는 원소
+Alg findMaxElements()
+ input Tree T
+ output elements of max key
+
+1.v<-T.root()
+2.while (isInternal(v))
+   v<-T.rightChild(v)
+3.v<-parent(v)
+4.k<-key(v)
+5.L<-empty list
+6.while (k = key(v))
+   L.addLast(element(v))
+   if(isRoot(v))
+    return
+   else
+    v<-parent(v)
+7.return L.elements()
+
+Alg findMinElements()
+ input Tree T
+ output elements of min key
+
+1.v<-T.root()
+2.while (isInternal(v))
+   v<-T.leftChild(v)
+3.v<-parent(v)
+4.k<-key(v)
+5.L<-empty list
+6.while (isInternal(v))
+   L.addLast(element(v))
+   v<- treeSearch(rightchild(v),k)
+//중복 이진트리기 때문에 Max 버전과 약간 다르다
+7.return L.elements()
