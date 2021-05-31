@@ -1,0 +1,152 @@
+//강연결성
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 10
+#define TRUE 1
+#define FALSE 0
+
+typedef struct
+{
+    int n, m;
+    int adj_mat[SIZE][SIZE];
+}GraphType;
+
+void init(GraphType* g)
+{
+    for (int row = 0; row < SIZE; row++)
+        for(int col = 0; col < SIZE; col++)
+            g->adj_mat[row][col] = 0;
+}
+
+void insert_edge(GraphType* g, int start, int end)
+{
+    if((start >= g->n) || (end >= g->n))
+    {
+        printf("간선을 추가 할 수 없습니다. \n");
+        return;
+    }
+    g->adj_mat[start][end] = 1;
+}
+
+void print_adj_mat(GraphType* g)
+{
+    printf("\n");
+    for(int row = 0; row < g->n; row++)
+    {
+        printf("|");
+        for(int col = 0; col < g->n; col++)
+        {
+            printf(" %d", g->adj_mat[row][col]);
+        }
+        printf("|\n");
+    }
+}
+
+void dfs_mat(GraphType* g, int visited[], int v)
+{
+    visited[v] = TRUE;
+    printf("정점[%d] ", v + 1);
+    for(int w = 0; w < g->n; w++)
+        if(g->adj_mat[v][w] && !visited[w])
+            dfs_mat(g, visited, w);
+}
+
+void rev_mat(GraphType* g, int v)
+{
+    GraphType r;
+    init(&r);
+    r.n = g->n;
+    int visited[SIZE] = {FALSE};
+    for (int row = 0; row < g->n; row ++)
+        for (int col = 0; col < g->n; col++)
+            r.adj_mat[col][row] = g->adj_mat[row][col];
+    print_adj_mat(&r); printf("\n");
+    dfs_mat(&r, visited, v - 1);
+}
+
+int main()
+{
+    GraphType g;
+    init(&g);
+    int n, m, v;
+    int start, end;
+    printf("정점과 간선의 개수를 입력하세요 \n");
+    scanf("%d %d", &g.n, &g.m);
+    for(int i = 0; i < g.m; i++)
+    {
+        scanf("%d %d", &start, &end);
+        insert_edge(&g, start - 1, end - 1);
+    }
+    print_adj_mat(&g);
+    
+    int visited[SIZE] = {FALSE};
+    printf("\n 깊이 우선탐색을 시작할 정점 입력: ");
+    scanf("%d", &v);
+    printf("\n");
+    dfs_mat(&g, visited, v - 1);
+    printf("\n");
+    rev_mat(&g, v);
+    printf("\n");
+}
+//이행적
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 10
+#define INF 1000000
+
+typedef struct GraphType
+{
+    int n;
+    int weight[SIZE][SIZE];
+}GraphType;
+
+int A[SIZE][SIZE];
+void printA(GraphType* g)
+{
+    int i, j;
+    printf("========================\n");
+    for (i = 0; i < g->n; i++)
+    {
+        for (j = 0; j < g->n; j++)
+        {
+            if (A[i][j] == INF)
+                printf(" * ");
+            else printf(" %d ", A[i][j]);
+        }
+        printf("\n");
+    }
+    printf("========================\n");
+}
+
+void floyd(GraphType* g)
+{
+    int i, j, k;
+    for (i = 0; i < g->n; i++)
+        for (j = 0; j < g->n; j++)
+            A[i][j] = g->weight[i][j];
+    printA(g);
+    
+    for (k = 0; k < g->n; k++)
+    {
+        for(i = 0; i < g->n; i++)
+            for(j = 0; j < g->n; j++)
+                if(A[i][k] == 1 && A[k][j] == 1)
+                    A[i][j] = 1;
+	//if(A[i][k] + A[k][j] < A[i][j])
+		//A[i][j] = A[i][k] + A[k][j];
+        printA(g);
+    }
+}
+int main()
+{
+    GraphType g = {5, {{ 0, 1, INF, 1, INF },
+        { INF, 0, INF, INF, INF },
+        {1, INF, 0, INF, INF },
+        { INF, INF, INF, 0, 1 },
+        { 1, INF, INF, INF, 0 }
+    }};
+    floyd(&g);
+    return 0;
+}
