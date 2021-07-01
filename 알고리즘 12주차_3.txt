@@ -7,7 +7,7 @@
 
 int map[M][N];
 int path[M][N];
-
+//재귀적 호출 기법
 int num_path(int m, int n)
 {
     if(map[m][n] == 0)
@@ -16,7 +16,7 @@ int num_path(int m, int n)
         return 1;
     return ((m > 0) ? num_path(m - 1, n) : 0) + ((n > 0) ? num_path(m, n - 1) : 0);
 }
-
+//동적프로그래밍기법
 int calc_path(int m, int n)
 {
     int i, j;
